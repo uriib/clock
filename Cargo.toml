@@ -1,23 +1,19 @@
+cargo-features = ["profile-rustflags"]
+
 [package]
 name = "clock"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-nc = { version = "0.9", default-features = false }
-# rustix = { version = "0.38.44", default-features = false, features = [
-#   "stdio",
-#   "thread",
-#   "process",
-#   "time",
-#   "linux_latest",
-# ] }
+bytemuck = "1.22.0"
+nc = { version = "0.9.7", default-features = false }
 
 [profile.dev]
 panic = "abort"
 
-[profile.release]
-panic = "abort"
+# [profile.release]
+# panic = "abort"
 
 [features]
 unit-test = []

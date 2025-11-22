@@ -2,8 +2,7 @@ use core::{fmt, slice};
 
 pub type Result<T> = core::result::Result<T, nc::Errno>;
 
-#[const_trait]
-pub trait Write: Sized {
+pub const trait Write: Sized {
     fn write(&mut self, bytes: &[u8]) -> Result<usize>;
     fn flush(&mut self) -> Result<usize>;
     fn write_all(&mut self, bytes: &[u8]) -> Result<()>;
@@ -106,7 +105,7 @@ impl<Buffer: AsMut<[u8]>, Write: self::Write> BufWriter<Buffer, Write> {
 
     fn fill(&mut self, bytes: &[u8]) {
         unsafe {
-            crate::utils::copy_nonoverlapping(
+            core::ptr::copy_nonoverlapping(
                 bytes.as_ptr(),
                 self.buffer.as_mut().as_mut_ptr().add(self.offset),
                 bytes.len(),
@@ -178,7 +177,7 @@ impl<'a, const N: usize> ArrayWriter<'a, N> {
     }
     pub const unsafe fn write_bytes_unchecked(&mut self, bytes: &[u8]) {
         unsafe {
-            crate::utils::copy_nonoverlapping(
+            core::ptr::copy_nonoverlapping(
                 bytes.as_ptr(),
                 self.buf.as_mut_ptr().add(self.len),
                 bytes.len(),
@@ -195,7 +194,7 @@ impl<'a, const N: usize> ArrayWriter<'a, N> {
 fn test_copy() {
     let src = b"hello";
     let mut dst = [0; 18];
-    unsafe { crate::utils::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len()) };
+    unsafe { core::ptr::copy_nonoverlapping(src.as_ptr(), dst.as_mut_ptr(), src.len()) };
     assert_eq!(dst[..src.len()], src[..])
 }
 
